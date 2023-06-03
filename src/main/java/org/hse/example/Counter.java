@@ -1,7 +1,8 @@
 package org.hse.example;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -28,10 +29,17 @@ public interface Counter {
 /**
  * Реализация {@link Counter}
  */
-@Data
-@AllArgsConstructor
 class CounterImpl implements Counter {
+    @Getter
     private final int length;
+
+    public CounterImpl(int length) {
+        this.length = length;
+    }
+
+    public CounterImpl() {
+        this.length = DEFAULT_LENGTH;
+    }
 
     protected Lucky getInstance(final int length, final int number) {
         return Ticket.getInstance(length, number);
@@ -60,7 +68,11 @@ class CounterImpl implements Counter {
     }
 }
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 class CounterStreamImpl extends CounterImpl implements Supplier<Stream<Ticket>> {
+
+    @Getter(lazy = true)
+    int count = this.count();
 
     private IntFunction<Ticket> toTicket =
             ((Function<Integer, Lucky>) num -> this.getInstance(getLength(), num)).andThen(Ticket.class::cast)::apply;
