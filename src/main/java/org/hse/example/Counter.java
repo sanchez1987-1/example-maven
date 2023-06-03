@@ -1,5 +1,8 @@
 package org.hse.example;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Supplier;
@@ -25,16 +28,10 @@ public interface Counter {
 /**
  * Реализация {@link Counter}
  */
+@Data
+@AllArgsConstructor
 class CounterImpl implements Counter {
     private final int length;
-
-    public CounterImpl(int length) {
-        this.length = length;
-    }
-
-    public CounterImpl() {
-        this.length = DEFAULT_LENGTH;
-    }
 
     protected Lucky getInstance(final int length, final int number) {
         return Ticket.getInstance(length, number);
