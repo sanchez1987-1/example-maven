@@ -1,5 +1,8 @@
 package org.hse.example;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -12,12 +15,6 @@ public interface Ticket extends Lucky {
 
     static Ticket getInstance(final int length, final int number) {
         Ticket ticket = new TicketImpl(length, number);
-
-        /*TicketUtils
-                .getDigitsSum(ticket)
-                .filter(num -> num % 13 == 0)
-                .map(num -> "Создаём билет с суммой цифр кратной 13 " + num)
-                .ifPresent(System.out::println);*/
         return ticket;
     }
 
@@ -45,44 +42,22 @@ public interface Ticket extends Lucky {
     /**
      * Реализация Сущности Билет
      */
+    @Data
+    @AllArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
     class TicketImpl implements Ticket {
 
         /**
          * Количество цифр в номере билета
          */
-        private int length;
+        @Getter(AccessLevel.NONE)
+        int length;
 
         /**
          * Номер билета
          */
+        @Getter(AccessLevel.NONE)
         private int number;
-        private TicketImpl() {
-        }
-
-        private TicketImpl(int length, int number) {
-            this.length = length;
-            this.number = number;
-        }
-
-        @Override
-        public int getLength() {
-            return length;
-        }
-
-        public void setLength(Integer length) {
-            Optional
-                    .ofNullable(length)
-                    .ifPresentOrElse(len -> this.length = len, () -> this.length = Counter.DEFAULT_LENGTH );
-        }
-
-        @Override
-        public int getNumber() {
-            return number;
-        }
-
-        public void setNumber(int number) {
-            this.number = number;
-        }
 
         /**
          * Вычисляет, является ли билет счастливым
@@ -98,6 +73,16 @@ public interface Ticket extends Lucky {
             int last = TicketUtils.getDigitsSum(getNumber() % half);
 
             return first == last;
+        }
+
+        @Override
+        public int getLength() {
+            return 0;
+        }
+
+        @Override
+        public int getNumber() {
+            return 0;
         }
     }
 
